@@ -40,25 +40,18 @@ export function parseStudentLine(raw: string, index: number = 0): ParsedStudent 
     .replace(priorityRegex, '')
     .trim();
 
-  // Check for attendance number prefix (e.g. "1.", "01.", "1)", "[1]", "(1)")
+  // Extract attendance number robustly (supports "Absen 17", "Absen: 17", "17.", "17)", "17", "17 - Budi")
   let absenNo: number | undefined;
-  const absenPrefixRegex = /^(\d+)[\.\)\-\:\s]\s*/;
-  const absenPrefixMatch = cleanName.match(absenPrefixRegex);
-
-  if (absenPrefixMatch) {
-    absenNo = parseInt(absenPrefixMatch[1], 10);
-    cleanName = cleanName.replace(absenPrefixRegex, '').trim();
-  } else if (/^\d+$/.test(cleanName)) {
-    absenNo = parseInt(cleanName, 10);
-    cleanName = `Siswa Absen ${absenNo}`;
-  }
-
-  if (absenNo === undefined) {
+  const matchAbsen = cleanName.match(/(?:absen[\s\.\:\-]*|^)(\d+)/i);
+  if (matchAbsen) {
+    absenNo = parseInt(matchAbsen[1], 10);
+  } else {
     absenNo = index + 1;
   }
 
-  if (!cleanName) {
-    cleanName = `Siswa Absen ${absenNo}`;
+  // Set clean display name
+  if (!cleanName || /^absen[\s\.\:\-]*\d+$/i.test(cleanName) || /^\d+$/.test(cleanName)) {
+    cleanName = `Absen ${absenNo}`;
   }
 
   cleanName = cleanName.replace(/^[,\s\-\–]+|[,\s\-\–]+$/g, '').trim();
@@ -123,7 +116,7 @@ export function distributeStudents(
 ): Seat[] {
   const { rows, cols, arrangement, emptyStrategy, frontPosition, prioritizeMinusInFront } = config;
 
-  // Parse all raw student strings with sequential index fallback
+  // Parse all raw student strings
   const parsedStudents = studentsRaw
     .map((line, idx) => parseStudentLine(line, idx))
     .filter((s) => s.name.length > 0);
@@ -235,7 +228,7 @@ export function distributeStudents(
     }
   }
 
-  // Separate Priority / Minus Students vs Regular Students
+  // Separate Priority Students vs Regular Students
   const priorityStudents = unassignedStudents.filter((s) => s.isPriorityFront);
   const regularStudents = unassignedStudents.filter((s) => !s.isPriorityFront);
 

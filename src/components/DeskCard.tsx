@@ -9,7 +9,7 @@ interface DeskCardProps {
   seat: Seat;
   arrangement: DeskArrangement;
   showSeatNumbers: boolean;
-  showInitials: boolean;
+  showInitials?: boolean;
   isSelectedForSwap: boolean;
   isAnySelectedForSwap: boolean;
   onSelectOrSwap: (seatId: string) => void;
@@ -29,7 +29,8 @@ export function DeskCard({
 }: DeskCardProps) {
   const { label, studentName, absenNo, isPriorityFront, isEmpty, isPinned, pairSide } = seat;
 
-  const formattedAbsen = absenNo !== undefined ? (absenNo < 10 ? `0${absenNo}` : `${absenNo}`) : '';
+  // Formatted attendance number
+  const numDisplay = absenNo !== undefined ? (absenNo < 10 ? `0${absenNo}` : `${absenNo}`) : '';
 
   return (
     <motion.div
@@ -42,7 +43,7 @@ export function DeskCard({
         stiffness: 380,
         damping: 30,
         mass: 0.8,
-        delay: Math.min(index * 0.01, 0.25),
+        delay: Math.min(index * 0.008, 0.2),
       }}
       onClick={() => onSelectOrSwap(seat.id)}
       className={`group relative flex flex-col justify-between p-2.5 sm:p-3 h-28 sm:h-32 rounded-2xl transition-all duration-200 cursor-pointer select-none border text-center ${
@@ -124,21 +125,21 @@ export function DeskCard({
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center w-full gap-1">
-            {/* Primary Attendance Badge (Contoh: Absen 01, Absen 31) */}
+            {/* Primary Attendance Badge (Contoh: ABSEN 17, ABSEN 20) */}
             <div
               className={`w-full max-w-[130px] py-1 px-2 rounded-xl flex items-center justify-center gap-1.5 font-black shadow-xs transition-all ${
                 isPinned
                   ? 'bg-amber-400 text-amber-950 border border-amber-500'
                   : isPriorityFront
-                  ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white border border-red-700 shadow-sm'
-                  : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border border-blue-700 shadow-sm'
+                  ? 'bg-red-600 text-white border border-red-700 shadow-sm'
+                  : 'bg-blue-600 text-white border border-blue-700 shadow-sm'
               }`}
             >
               <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-tight opacity-90">
                 Absen
               </span>
               <span className="text-sm sm:text-base md:text-lg font-black font-mono leading-none">
-                {formattedAbsen}
+                {numDisplay || '?'}
               </span>
             </div>
 
@@ -146,7 +147,7 @@ export function DeskCard({
             {isPriorityFront ? (
               <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-black text-red-700 bg-red-100 px-1.5 py-0.2 rounded-full border border-red-200">
                 <Star className="w-2.5 h-2.5 text-red-600 fill-red-600 shrink-0" />
-                <span className="truncate">Prioritas</span>
+                <span className="truncate">Prioritas Depan</span>
               </span>
             ) : isPinned ? (
               <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-black text-amber-900 bg-amber-200 px-1.5 py-0.2 rounded-full border border-amber-300">
