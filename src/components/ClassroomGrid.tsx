@@ -112,7 +112,7 @@ export function ClassroomGrid({
     <div className="w-full flex items-center justify-center my-6">
       <div className="flex items-center gap-2 text-xs text-slate-500 font-semibold px-5 py-2 rounded-full border-2 border-dashed border-slate-300 bg-white shadow-2xs">
         <DoorOpen className="w-4 h-4 text-amber-500" />
-        <span>🚪 PINTU MASUK & BELAKANG KELAS</span>
+        <span>RUANG LEYEH-LEYEH MAS EGA ANGGORO & MAS DAMA</span>
       </div>
     </div>
   );
