@@ -249,12 +249,11 @@ export function distributeStudents(
   const seatAssignments = new Map<string, ParsedStudent>();
 
   if (prioritizeMinusInFront && shuffledPriority.length > 0) {
-    // Sort active seats prioritizing frontmost rows (Baris 1, Baris 2...)
+    // Sort active seats prioritizing frontmost rows (Row 0: A1, A2, A3... then Row 1: B1, B2...)
     const frontPrioritySeats = [...activeSeatsList].sort((a, b) => {
       const rowDiff = frontPosition === 'top' ? a.row - b.row : b.row - a.row;
       if (rowDiff !== 0) return rowDiff;
-      const midCol = (cols - 1) / 2;
-      return Math.abs(a.col - midCol) - Math.abs(b.col - midCol);
+      return a.col - b.col;
     });
 
     let pIdx = 0;

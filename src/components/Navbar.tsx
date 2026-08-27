@@ -88,7 +88,7 @@ export function Navbar({
               {config.arrangement === '2-2' ? '2-2 Gandeng' : '1-1 Mandiri'}
             </span>
           </div>
-          <span className="text-xs text-slate-500 font-semibold truncate max-w-[200px] sm:max-w-xs">
+          <span className="text-[11px] sm:text-xs text-slate-500 font-semibold truncate max-w-[120px] sm:max-w-xs">
             {config.title || 'Penata Tempat Duduk Kelas'}
           </span>
         </div>

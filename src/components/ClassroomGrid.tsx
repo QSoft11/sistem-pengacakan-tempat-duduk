@@ -154,14 +154,15 @@ export function ClassroomGrid({
         {/* Header if top (Meja Guru Pojok Kiri Atas + Papan Tulis) */}
         {frontPosition === 'top' && StageHeader}
 
-        {/* Dynamic Seating Grid */}
-        <div className="w-full max-w-5xl my-4 overflow-x-auto py-2 px-1">
+        {/* Dynamic Seating Grid Container */}
+        <div className="w-full max-w-5xl my-4 overflow-x-auto py-2 px-1 scrollbar-thin">
           {arrangement === '1-1' ? (
             /* 1-1 Layout: Grid Meja Mandiri */
             <div
-              className="grid gap-3.5 mx-auto"
+              className="grid gap-2.5 sm:gap-3.5 mx-auto"
               style={{
-                gridTemplateColumns: `repeat(${cols}, minmax(130px, 1fr))`,
+                gridTemplateColumns: `repeat(${cols}, minmax(100px, 1fr))`,
+                minWidth: `${cols * 105}px`,
               }}
             >
               <AnimatePresence mode="popLayout">
@@ -183,24 +184,29 @@ export function ClassroomGrid({
             </div>
           ) : (
             /* 2-2 Layout: Baris Meja Berpasangan dengan Lorong Jalan */
-            <div className="flex flex-col gap-4 mx-auto w-full">
+            <div
+              className="flex flex-col gap-3.5 sm:gap-4 mx-auto w-full"
+              style={{
+                minWidth: `${pairsPerRow * 220}px`,
+              }}
+            >
               {/* Optional Aisle Header Markers */}
               {showAisleMarkers && pairsPerRow > 1 && (
                 <div
-                  className="grid gap-6 px-1 mb-1"
+                  className="grid gap-4 sm:gap-6 px-1 mb-1"
                   style={{
-                    gridTemplateColumns: `repeat(${pairsPerRow}, minmax(260px, 1fr))`,
+                    gridTemplateColumns: `repeat(${pairsPerRow}, minmax(210px, 1fr))`,
                   }}
                 >
                   {Array.from({ length: pairsPerRow }).map((_, pIdx) => (
                     <div
                       key={`pair-header-${pIdx}`}
-                      className="flex items-center justify-between text-[11px] font-mono font-bold text-blue-700 bg-blue-50/60 px-3 py-1 rounded-lg border border-blue-100"
+                      className="flex items-center justify-between text-[11px] font-mono font-bold text-blue-700 bg-blue-50/70 px-3 py-1 rounded-lg border border-blue-100 shadow-2xs"
                     >
                       <span>Kelompok Meja {pIdx + 1}</span>
                       {pIdx < pairsPerRow - 1 && (
-                        <span className="text-[10px] text-amber-600 font-semibold">
-                          [ Lorong Jalan ]
+                        <span className="text-[10px] text-amber-600 font-semibold hidden sm:inline">
+                          [ Lorong ]
                         </span>
                       )}
                     </div>
@@ -219,15 +225,15 @@ export function ClassroomGrid({
                 return (
                   <div
                     key={`row-${rIdx}`}
-                    className="grid gap-6 items-center"
+                    className="grid gap-4 sm:gap-6 items-center"
                     style={{
-                      gridTemplateColumns: `repeat(${pairsPerRow}, minmax(260px, 1fr))`,
+                      gridTemplateColumns: `repeat(${pairsPerRow}, minmax(210px, 1fr))`,
                     }}
                   >
                     {pairs.map((pair, pIdx) => (
                       <div
                         key={`pair-${rIdx}-${pIdx}`}
-                        className="grid grid-cols-2 gap-1.5 bg-slate-100 p-1.5 rounded-2xl border-2 border-slate-200 shadow-2xs hover:border-blue-200 transition-colors"
+                        className="grid grid-cols-2 gap-1.5 bg-slate-100/90 p-1.5 rounded-2xl border-2 border-slate-200 shadow-2xs hover:border-blue-200 transition-colors"
                       >
                         {pair.map((seat, seatIdx) => (
                           <DeskCard
