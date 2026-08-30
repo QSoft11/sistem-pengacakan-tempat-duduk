@@ -34,27 +34,41 @@ export function parseStudentLine(raw: string, index: number = 0): ParsedStudent 
   const hasPriorityTag = priorityRegex.test(trimmed);
   const isPriorityFront = hasMinus || hasPriorityTag;
 
-  // Remove tags from name
+  // Remove tags from raw string
   let cleanName = trimmed
     .replace(minusRegex, '')
     .replace(priorityRegex, '')
     .trim();
 
-  // Extract attendance number robustly (supports "Absen 17", "Absen: 17", "17.", "17)", "17", "17 - Budi")
   let absenNo: number | undefined;
-  const matchAbsen = cleanName.match(/(?:absen[\s\.\:\-]*|^)(\d+)/i);
-  if (matchAbsen) {
-    absenNo = parseInt(matchAbsen[1], 10);
+
+  // Case 1: Format like "Absen 17: Budi Santoso" or "Absen 17 - Budi"
+  const absenWithNameMatch = cleanName.match(/^absen[\s\.\:\-]*(\d+)[\s\.\:\-]+(.+)$/i);
+  // Case 2: Format like "1. Budi Santoso" or "01 - Budi Santoso" or "1) Budi"
+  const prefixNumberMatch = cleanName.match(/^(\d+)[\.\)\-\:\s]+\s*(.+)$/i);
+  // Case 3: Format like "Absen 17" or "Absen: 17"
+  const onlyAbsenMatch = cleanName.match(/^absen[\s\.\:\-]*(\d+)$/i);
+  // Case 4: Format like pure number "17"
+  const onlyNumberMatch = cleanName.match(/^(\d+)$/);
+
+  if (absenWithNameMatch) {
+    absenNo = parseInt(absenWithNameMatch[1], 10);
+    cleanName = absenWithNameMatch[2].trim();
+  } else if (prefixNumberMatch && !/^\d+$/.test(prefixNumberMatch[2])) {
+    absenNo = parseInt(prefixNumberMatch[1], 10);
+    cleanName = prefixNumberMatch[2].trim();
+  } else if (onlyAbsenMatch) {
+    absenNo = parseInt(onlyAbsenMatch[1], 10);
+    cleanName = `Absen ${absenNo}`;
+  } else if (onlyNumberMatch) {
+    absenNo = parseInt(onlyNumberMatch[1], 10);
+    cleanName = `Absen ${absenNo}`;
   } else {
+    // Plain name (e.g. "Budi Santoso")
     absenNo = index + 1;
   }
 
-  // Set clean display name
-  if (!cleanName || /^absen[\s\.\:\-]*\d+$/i.test(cleanName) || /^\d+$/.test(cleanName)) {
-    cleanName = `Absen ${absenNo}`;
-  }
-
-  cleanName = cleanName.replace(/^[,\s\-\–]+|[,\s\-\–]+$/g, '').trim();
+  cleanName = cleanName.replace(/^[,\s\-\–\:\.]+|[,\s\-\–\:\.]+$/g, '').trim();
 
   return {
     originalRaw: trimmed,

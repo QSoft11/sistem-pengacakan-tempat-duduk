@@ -73,23 +73,23 @@ export function Navbar({
   }, []);
 
   return (
-    <header className="sticky top-0 z-40 w-full h-16 bg-white/95 backdrop-blur-md border-b-2 border-blue-100 px-4 sm:px-6 flex items-center justify-between shadow-2xs">
+    <header className="sticky top-0 z-40 w-full max-w-full h-16 bg-white/95 backdrop-blur-md border-b-2 border-blue-100 px-3 sm:px-6 flex items-center justify-between shadow-2xs">
       {/* Brand & Title */}
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-2xl bg-blue-600 text-amber-300 flex items-center justify-center shadow-md shadow-blue-500/20 border-2 border-blue-500">
-          <Armchair className="w-5 h-5" />
+      <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-blue-600 text-amber-300 flex items-center justify-center shadow-md shadow-blue-500/20 border-2 border-blue-500 shrink-0">
+          <Armchair className="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <span className="text-base font-extrabold tracking-tight text-blue-950">
-              SeatCraft
+        <div className="flex flex-col min-w-0">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="text-sm sm:text-base font-black tracking-tight text-blue-950 truncate">
+              DENAHKU
             </span>
-            <span className="text-[10px] uppercase font-mono font-bold px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200">
+            <span className="text-[9px] sm:text-[10px] uppercase font-mono font-bold px-1.5 sm:px-2 py-0.5 rounded-full bg-blue-100 text-blue-800 border border-blue-200 shrink-0 hidden xs:inline-block">
               {config.arrangement === '2-2' ? '2-2 Gandeng' : '1-1 Mandiri'}
             </span>
           </div>
-          <span className="text-[11px] sm:text-xs text-slate-500 font-semibold truncate max-w-[120px] sm:max-w-xs">
-            {config.title || 'Penata Tempat Duduk Kelas'}
+          <span className="text-[10px] sm:text-xs text-slate-500 font-semibold truncate max-w-[100px] sm:max-w-xs">
+            {config.title || 'Penata Kelas'}
           </span>
         </div>
       </div>
@@ -118,7 +118,7 @@ export function Navbar({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
         {/* Undo / Redo */}
         <div className="flex items-center rounded-xl border border-slate-200 bg-slate-100 p-0.5">
           <button
@@ -126,18 +126,18 @@ export function Navbar({
             disabled={!canUndo}
             onClick={onUndo}
             title="Urungkan perubahan (⌘Z)"
-            className="p-1.5 rounded-lg text-slate-700 hover:bg-white hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs"
+            className="p-1 sm:p-1.5 rounded-lg text-slate-700 hover:bg-white hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs"
           >
-            <Undo2 className="w-4 h-4" />
+            <Undo2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
           <button
             type="button"
             disabled={!canRedo}
             onClick={onRedo}
             title="Ulangi perubahan (⌘⇧Z)"
-            className="p-1.5 rounded-lg text-slate-700 hover:bg-white hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs"
+            className="p-1 sm:p-1.5 rounded-lg text-slate-700 hover:bg-white hover:text-blue-600 disabled:opacity-30 disabled:cursor-not-allowed transition-all shadow-2xs"
           >
-            <Redo2 className="w-4 h-4" />
+            <Redo2 className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
 
@@ -155,10 +155,11 @@ export function Navbar({
         <button
           type="button"
           onClick={onOpenPresentation}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-xs font-bold text-slate-700 hover:text-blue-700 transition-all shadow-2xs"
+          title="Mode Proyektor Layar Penuh"
+          className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-xs font-bold text-slate-700 hover:text-blue-700 transition-all shadow-2xs"
         >
           <Tv className="w-4 h-4 text-blue-600" />
-          <span className="hidden sm:inline">Mode Proyektor</span>
+          <span className="hidden sm:inline">Proyektor</span>
         </button>
 
         {/* Export Dropdown */}
@@ -166,11 +167,12 @@ export function Navbar({
           <button
             type="button"
             onClick={() => setExportOpen((prev) => !prev)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-xs font-bold text-slate-700 hover:text-blue-700 transition-all shadow-2xs"
+            title="Ekspor Denah"
+            className="flex items-center gap-1 p-2 sm:px-3 sm:py-2 rounded-xl border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-xs font-bold text-slate-700 hover:text-blue-700 transition-all shadow-2xs"
           >
             <Download className="w-4 h-4 text-blue-600" />
             <span className="hidden sm:inline">Ekspor</span>
-            <ChevronDown className="w-3.5 h-3.5 opacity-60" />
+            <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 opacity-60" />
           </button>
 
           {exportOpen && (
@@ -233,14 +235,14 @@ export function Navbar({
           type="button"
           onClick={onShuffle}
           disabled={isShuffling || stats.totalStudents === 0}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-95 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 active:scale-95 text-white font-bold text-xs shadow-lg shadow-blue-500/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Shuffle
-            className={`w-4 h-4 text-amber-300 transition-transform duration-500 ${
+            className={`w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300 transition-transform duration-500 ${
               isShuffling ? 'rotate-180 scale-125' : ''
             }`}
           />
-          <span className="font-extrabold tracking-wide">Acak Meja</span>
+          <span className="font-extrabold tracking-wide">Acak</span>
           <span className="hidden md:inline text-[10px] bg-white/20 text-amber-200 px-1.5 py-0.5 rounded font-mono font-bold">
             Spasi
           </span>

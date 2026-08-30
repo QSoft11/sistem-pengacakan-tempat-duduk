@@ -37,6 +37,7 @@ export interface ClassroomConfig {
   teacherName: string;
   roomNumber: string;
   date: string;
+  validUntilDate: string;
   arrangement: DeskArrangement;
   rows: number;
   cols: number;

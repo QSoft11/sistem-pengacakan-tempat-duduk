@@ -72,7 +72,7 @@ export function KeyboardShortcutsModal({
         </div>
 
         <div className="mt-1 p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-center text-[11px] font-semibold text-amber-900">
-          💡 Tips Guru: Klik meja pertama, lalu klik meja kedua untuk langsung menukar posisi duduk dua siswa.
+          Tips: Klik meja pertama, lalu klik meja kedua untuk langsung menukar posisi duduk dua siswa.
         </div>
       </div>
     </div>

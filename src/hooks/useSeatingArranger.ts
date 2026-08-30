@@ -17,16 +17,42 @@ import {
   parseStudentLine,
 } from '../utils/seatingLogic';
 
-const DEFAULT_PRESET = PRESET_ROSTERS[0]; // Kelas 10 MIPA 1
+function formatIndonesianDate(d: Date): string {
+  try {
+    return new Intl.DateTimeFormat('id-ID', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    }).format(d);
+  } catch {
+    const months = [
+      'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+      'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    ];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+  }
+}
+
+function getFormattedToday(): string {
+  return formatIndonesianDate(new Date());
+}
+
+function getFormattedValidUntil(days: number = 7): string {
+  const future = new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+  return formatIndonesianDate(future);
+}
+
+const DEFAULT_PRESET = PRESET_ROSTERS[0]; // Kelas 10 SIJA A
 
 const DEFAULT_CONFIG: ClassroomConfig = {
   title: 'Kelas 10 SIJA A',
-  teacherName: 'Hartitik, S.Pd',
-  roomNumber: 'Lab SIJA',
-  date: '27 Agustus 2026',
-  arrangement: '2-2',
-  rows: 5,
-  cols: 8, // 4 pasang = 8 meja per baris = 40 meja
+  teacherName: 'Hartitik, S.Pd.',
+  roomNumber: 'Rutor 4',
+  date: getFormattedToday(),
+  validUntilDate: getFormattedValidUntil(7), // Default berlaku 1 minggu (7 hari)
+  arrangement: '1-1',
+  rows: 6,
+  cols: 6, // 6 baris x 6 kolom = 36 meja
   emptyStrategy: 'random',
   frontPosition: 'top',
   teacherDeskPosition: 'top-left', // Pojok kiri atas
@@ -376,6 +402,7 @@ export function useSeatingArranger() {
         cols: preset.recommendedConfig?.cols || config.cols,
         arrangement: preset.recommendedConfig?.arrangement || config.arrangement,
         prioritizeMinusInFront: true,
+        displayMode: preset.recommendedConfig?.displayMode || config.displayMode,
       };
 
       setConfigState(nextConfig);

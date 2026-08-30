@@ -52,23 +52,32 @@ export function ClassroomGrid({
     return seats.find((s) => s.id === selectedSeatForSwap);
   }, [seats, selectedSeatForSwap]);
 
-  // Stage Header: Meja Guru di Pojok Kiri Atas + Papan Tulis Utama
+  // Stage Header: Meja Guru (Pojok Kiri / Kanan Atas) + Papan Tulis Utama
+  const isDeskRight = config.teacherDeskPosition === 'top-right';
   const StageHeader = (
-    <div className="w-full max-w-5xl my-4 flex flex-col md:flex-row items-stretch gap-3.5">
-      {/* Meja Guru di Pojok Kiri Atas */}
-      <div className="md:w-72 bg-gradient-to-br from-amber-400 via-amber-300 to-amber-500 text-blue-950 rounded-2xl p-3.5 shadow-md border-2 border-amber-500 flex flex-col justify-between shrink-0">
+    <div
+      data-export-stage-header="true"
+      className={`w-full max-w-5xl my-4 flex flex-col ${
+        isDeskRight ? 'md:flex-row-reverse' : 'md:flex-row'
+      } items-stretch gap-3.5`}
+    >
+      {/* Meja Guru */}
+      <div
+        data-export-teacher-desk="true"
+        className="md:w-72 bg-gradient-to-br from-amber-400 via-amber-300 to-amber-500 text-blue-950 rounded-2xl p-3.5 shadow-md border-2 border-amber-500 flex flex-col justify-between shrink-0"
+      >
         <div className="flex items-center justify-between">
           <span className="text-[10px] font-extrabold uppercase tracking-wider bg-blue-900 text-amber-300 px-2 py-0.5 rounded-md">
-            📍 Pojok Kiri Atas
+            {isDeskRight ? 'Pojok Kanan Atas' : 'Pojok Kiri Atas'}
           </span>
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping" />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-ping export-ignore" />
         </div>
 
         <div className="my-2 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-900 text-amber-300 flex items-center justify-center shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-blue-900 text-amber-300 flex items-center justify-center shadow-xs shrink-0">
             <Presentation className="w-5 h-5" />
           </div>
-          <div>
+          <div className="min-w-0">
             <h4 className="text-xs font-black uppercase tracking-tight">Meja Guru</h4>
             <p className="text-[11px] font-extrabold text-blue-900 truncate max-w-[150px]">
               {config.teacherName || 'Bapak/Ibu Guru'}
@@ -84,32 +93,35 @@ export function ClassroomGrid({
         </div>
       </div>
 
-      {/* Papan Tulis Utama (Tengah ke Kanan) */}
-      <div className="flex-1 bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 text-white rounded-2xl px-6 py-3.5 shadow-md border-2 border-blue-500 flex flex-col justify-between">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-3 h-3 rounded-full bg-amber-300 animate-pulse" />
-            <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-white">
-              📋 PAPAN TULIS UTAMA (DEPAN KELAS)
+      {/* Papan Tulis Utama */}
+      <div
+        data-export-blackboard="true"
+        className="flex-1 bg-gradient-to-r from-blue-700 via-blue-600 to-indigo-700 text-white rounded-2xl px-6 py-3.5 shadow-md border-2 border-blue-500 flex flex-col justify-between min-w-0"
+      >
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-3 h-3 rounded-full bg-amber-300 animate-pulse export-ignore shrink-0" />
+            <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-white truncate">
+              PAPAN TULIS UTAMA (DEPAN KELAS)
             </span>
           </div>
-          <span className="text-xs font-mono font-bold bg-white/20 px-2.5 py-0.5 rounded-lg">
+          <span className="text-xs font-mono font-bold bg-white/20 px-2.5 py-0.5 rounded-lg shrink-0">
             {config.title || 'Mata Pelajaran'}
           </span>
         </div>
 
         <div className="w-full h-1.5 bg-blue-300 rounded-full my-2 opacity-80" />
 
-        <div className="flex items-center justify-between text-[11px] text-blue-100 font-semibold">
-          <span>Fokus Tatap Muka Siswa</span>
-          <span className="text-amber-200 font-bold">Baris 1 & 2 Prioritas Mata Minus</span>
+        <div className="flex items-center justify-between text-[11px] text-blue-100 font-semibold gap-2">
+          <span className="truncate">Masa Berlaku: {config.date} s.d. {config.validUntilDate || config.date}</span>
+          <span className="text-amber-200 font-bold shrink-0">Baris 1 & 2 Prioritas Mata Minus</span>
         </div>
       </div>
     </div>
   );
 
   const RearClassroomBanner = (
-    <div className="w-full flex items-center justify-center my-6">
+    <div data-export-rear-banner="true" className="w-full flex items-center justify-center my-6">
       <div className="flex items-center gap-2 text-xs text-slate-500 font-semibold px-5 py-2 rounded-full border-2 border-dashed border-slate-300 bg-white shadow-2xs">
         <DoorOpen className="w-4 h-4 text-amber-500" />
         <span>RUANG LEYEH-LEYEH MAS EGA ANGGORO & MAS DAMA</span>
@@ -118,7 +130,7 @@ export function ClassroomGrid({
   );
 
   return (
-    <div className="relative flex flex-col items-center w-full min-h-[600px] p-4 sm:p-6 bg-white rounded-3xl border-2 border-blue-100 shadow-sm transition-all">
+    <div className="relative flex flex-col items-center w-full max-w-full min-h-[600px] p-3 sm:p-6 bg-white rounded-3xl border-2 border-blue-100 shadow-sm transition-all overflow-hidden min-w-0">
       {/* Swap Selection Banner */}
       <AnimatePresence>
         {selectedSeatForSwap && selectedSeat && (
@@ -126,7 +138,7 @@ export function ClassroomGrid({
             initial={{ opacity: 0, y: -16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -16 }}
-            className="sticky top-4 z-30 mb-4 flex items-center justify-between gap-4 px-5 py-3 bg-blue-600 text-white rounded-2xl shadow-xl shadow-blue-500/30 text-sm font-semibold w-full max-w-md border border-blue-400"
+            className="sticky top-4 z-30 mb-4 flex items-center justify-between gap-4 px-5 py-3 bg-blue-600 text-white rounded-2xl shadow-xl shadow-blue-500/30 text-sm font-semibold w-full max-w-md border border-blue-400 export-ignore"
           >
             <div className="flex items-center gap-2">
               <ArrowDownUp className="w-5 h-5 text-amber-300 animate-bounce" />
@@ -150,12 +162,15 @@ export function ClassroomGrid({
       </AnimatePresence>
 
       {/* Classroom Canvas to Export */}
-      <div id="classroom-grid-canvas" className="w-full flex flex-col items-center">
+      <div id="classroom-grid-canvas" data-export-root="true" className="w-full max-w-full flex flex-col items-center min-w-0">
         {/* Header if top (Meja Guru Pojok Kiri Atas + Papan Tulis) */}
         {frontPosition === 'top' && StageHeader}
 
         {/* Dynamic Seating Grid Container */}
-        <div className="w-full max-w-5xl my-4 overflow-x-auto py-2 px-1 scrollbar-thin">
+        <div
+          data-export-grid-scroll="true"
+          className="w-full max-w-full my-4 overflow-x-auto py-2 px-1 scrollbar-thin"
+        >
           {arrangement === '1-1' ? (
             /* 1-1 Layout: Grid Meja Mandiri */
             <div
@@ -174,6 +189,7 @@ export function ClassroomGrid({
                     arrangement="1-1"
                     showSeatNumbers={showSeatNumbers}
                     showInitials={showInitials}
+                    displayMode={config.displayMode}
                     isSelectedForSwap={selectedSeatForSwap === seat.id}
                     isAnySelectedForSwap={!!selectedSeatForSwap}
                     onSelectOrSwap={onSelectOrSwap}
@@ -243,6 +259,7 @@ export function ClassroomGrid({
                             arrangement="2-2"
                             showSeatNumbers={showSeatNumbers}
                             showInitials={showInitials}
+                            displayMode={config.displayMode}
                             isSelectedForSwap={selectedSeatForSwap === seat.id}
                             isAnySelectedForSwap={!!selectedSeatForSwap}
                             onSelectOrSwap={onSelectOrSwap}

@@ -3,13 +3,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Pin, Armchair, Star } from 'lucide-react';
-import { Seat, DeskArrangement } from '../types/seating';
+import { Seat, DeskArrangement, StudentDisplayMode } from '../types/seating';
 
 interface DeskCardProps {
   seat: Seat;
   arrangement: DeskArrangement;
   showSeatNumbers: boolean;
   showInitials?: boolean;
+  displayMode?: StudentDisplayMode;
   isSelectedForSwap: boolean;
   isAnySelectedForSwap: boolean;
   onSelectOrSwap: (seatId: string) => void;
@@ -21,6 +22,7 @@ export function DeskCard({
   seat,
   arrangement,
   showSeatNumbers,
+  displayMode = 'absen-primary',
   isSelectedForSwap,
   isAnySelectedForSwap,
   onSelectOrSwap,
@@ -31,6 +33,9 @@ export function DeskCard({
 
   // Formatted attendance number
   const numDisplay = absenNo !== undefined ? (absenNo < 10 ? `0${absenNo}` : `${absenNo}`) : '';
+
+  const isRealName = Boolean(studentName && !/^absen[\s\.\:\-]*\d+$/i.test(studentName.trim()));
+  const isNameMode = displayMode === 'name-primary' || (isRealName && displayMode !== 'absen-only');
 
   return (
     <motion.div
@@ -91,7 +96,7 @@ export function DeskCard({
         </div>
 
         {/* Action / Pin Button */}
-        {!isEmpty && studentName && (
+        {!isEmpty && (
           <button
             type="button"
             title={isPinned ? 'Kursi terkunci (tidak akan teracak)' : 'Kunci posisi kursi'}
@@ -114,8 +119,8 @@ export function DeskCard({
         )}
       </div>
 
-      {/* Center content: Centered Bold Attendance Badge & Priority Status */}
-      <div className="my-auto flex flex-col items-center justify-center w-full px-0.5">
+      {/* Center content: Name Mode or Attendance Number Mode */}
+      <div className="my-auto flex flex-col items-center justify-center w-full px-0.5 min-w-0">
         {isEmpty ? (
           <div className="flex flex-col items-center gap-0.5 text-slate-400">
             <Armchair className="w-5 h-5 text-slate-300" />
@@ -123,8 +128,53 @@ export function DeskCard({
               Kosong
             </span>
           </div>
+        ) : isNameMode ? (
+          /* Mode Nama Siswa */
+          <div className="flex flex-col items-center justify-center w-full gap-1 min-w-0">
+            {/* Student Name Box */}
+            <div
+              className={`w-full py-1 px-1.5 rounded-xl flex flex-col items-center justify-center font-black transition-all ${
+                isPinned
+                  ? 'bg-amber-400 text-amber-950 border border-amber-500 shadow-xs'
+                  : isPriorityFront
+                  ? 'bg-red-600 text-white border border-red-700 shadow-sm'
+                  : 'bg-blue-50 text-blue-950 border border-blue-200'
+              }`}
+            >
+              <span className="text-[11px] sm:text-xs md:text-sm font-extrabold leading-tight line-clamp-2 text-center break-words w-full">
+                {studentName}
+              </span>
+            </div>
+
+            {/* Sub Absen Pill & Priority Tag */}
+            <div className="flex items-center gap-1 flex-wrap justify-center">
+              {absenNo && (
+                <span
+                  className={`text-[8px] sm:text-[9px] font-mono font-extrabold px-1.5 py-0.2 rounded border ${
+                    isPriorityFront
+                      ? 'bg-red-100 text-red-800 border-red-200'
+                      : 'bg-slate-100 text-slate-700 border-slate-200'
+                  }`}
+                >
+                  Absen #{numDisplay}
+                </span>
+              )}
+              {isPriorityFront ? (
+                <span className="inline-flex items-center gap-0.5 text-[8px] sm:text-[9px] font-black text-red-700 bg-red-100 px-1.5 py-0.2 rounded-full border border-red-200">
+                  <Star className="w-2 h-2 text-red-600 fill-red-600 shrink-0" />
+                  <span>Prioritas</span>
+                </span>
+              ) : isPinned ? (
+                <span className="inline-flex items-center gap-0.5 text-[8px] sm:text-[9px] font-black text-amber-900 bg-amber-200 px-1.5 py-0.2 rounded-full border border-amber-300">
+                  <Pin className="w-2 h-2 fill-current shrink-0" />
+                  <span>Terkunci</span>
+                </span>
+              ) : null}
+            </div>
+          </div>
         ) : (
-          <div className="flex flex-col items-center justify-center w-full gap-1">
+          /* Mode Nomor Absen */
+          <div className="flex flex-col items-center justify-center w-full gap-1 min-w-0">
             {/* Primary Attendance Badge (Contoh: ABSEN 17, ABSEN 20) */}
             <div
               className={`w-full max-w-[130px] py-1 px-2 rounded-xl flex items-center justify-center gap-1.5 font-black shadow-xs transition-all ${
@@ -151,7 +201,8 @@ export function DeskCard({
               </span>
             ) : isPinned ? (
               <span className="inline-flex items-center gap-1 text-[8px] sm:text-[9px] font-black text-amber-900 bg-amber-200 px-1.5 py-0.2 rounded-full border border-amber-300">
-                📌 Terkunci
+                <Pin className="w-2.5 h-2.5 fill-current shrink-0" />
+                <span>Terkunci</span>
               </span>
             ) : null}
           </div>
@@ -159,7 +210,7 @@ export function DeskCard({
       </div>
 
       {/* Bottom bar indicator / swap hint */}
-      <div className="flex items-center justify-center text-[9px] sm:text-[10px] text-slate-400 h-3">
+      <div className="flex items-center justify-center text-[9px] sm:text-[10px] text-slate-400 h-3 export-ignore">
         {isSelectedForSwap ? (
           <span className="text-blue-600 font-bold animate-pulse">
             Klik meja tukar

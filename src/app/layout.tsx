@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SeatCraft — Penata Tempat Duduk Kelas Otomatis',
+  title: 'DENAHKU — Generator & Pengacak Tempat Duduk Kelas Otomatis',
   description:
-    'Aplikasi pengacak tempat duduk kelas otomatis dengan dukungan susunan meja 1-1 dan 2-2, prioritas siswa mata minus di baris depan, nomor absen, mode proyektor layar penuh, dan ekspor PDF/PNG.',
+    'Aplikasi pengacak tempat duduk kelas otomatis dengan dukungan susunan meja 1-1 dan 2-2, input nama siswa & nomor absen, prioritas siswa di baris depan, mode proyektor layar penuh, dan ekspor PDF/PNG.',
 };
 
 export default function RootLayout({

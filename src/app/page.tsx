@@ -8,8 +8,8 @@ import { ClassroomGrid } from '../components/ClassroomGrid';
 import { PresentationModal } from '../components/PresentationModal';
 import { KeyboardShortcutsModal } from '../components/KeyboardShortcutsModal';
 import {
-  exportElementAsPng,
-  exportElementAsPdf,
+  exportSeatsAsPng,
+  exportSeatsAsPdf,
   exportSeatsToCsv,
 } from '../utils/exportHelper';
 import { CheckCircle2, Star, Glasses } from 'lucide-react';
@@ -108,22 +108,19 @@ export default function SeatingAppPage() {
 
   // Export handlers
   const handleExportPng = async () => {
-    const el = document.getElementById('classroom-grid-canvas');
-    if (!el) return;
     showToast('Sedang memproses gambar PNG resolusi tinggi...');
-    const success = await exportElementAsPng(
-      el,
+    const success = await exportSeatsAsPng(
+      seats,
+      config,
       `${config.title.toLowerCase().replace(/[\s\.\•]+/g, '-')}-denah.png`
     );
     if (success) showToast('Gambar PNG berhasil diunduh!');
   };
 
   const handleExportPdf = async () => {
-    const el = document.getElementById('classroom-grid-canvas');
-    if (!el) return;
     showToast('Sedang membuat dokumen PDF siap cetak...');
-    const success = await exportElementAsPdf(
-      el,
+    const success = await exportSeatsAsPdf(
+      seats,
       config,
       `${config.title.toLowerCase().replace(/[\s\.\•]+/g, '-')}-denah.pdf`
     );
@@ -168,7 +165,7 @@ export default function SeatingAppPage() {
       />
 
       {/* Main Workspace Layout (Sidebar + Interactive Classroom Visual Map) */}
-      <main className="flex-1 flex flex-col lg:flex-row w-full max-w-[1700px] mx-auto">
+      <main className="flex-1 flex flex-col lg:flex-row w-full max-w-full lg:max-w-[1700px] mx-auto min-w-0 overflow-x-hidden">
         {/* Left Sidebar Control Center */}
         <Sidebar
           studentsText={studentsText}
@@ -191,12 +188,12 @@ export default function SeatingAppPage() {
         />
 
         {/* Right Classroom Visual Map Canvas */}
-        <section className="flex-1 p-4 sm:p-6 md:p-8 flex flex-col items-center justify-start overflow-y-auto">
-          <div className="w-full max-w-5xl flex flex-col gap-4">
+        <section className="flex-1 p-3 sm:p-6 md:p-8 flex flex-col items-center justify-start overflow-y-auto w-full max-w-full min-w-0 overflow-x-hidden">
+          <div className="w-full max-w-5xl flex flex-col gap-4 min-w-0">
             {/* Context bar above canvas */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
-              <div>
-                <h2 className="text-lg font-extrabold text-blue-950">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1 min-w-0">
+              <div className="min-w-0">
+                <h2 className="text-base sm:text-lg font-extrabold text-blue-950 truncate">
                   {config.title || 'Denah Tempat Duduk Kelas'}
                 </h2>
                 <p className="text-xs text-slate-600 font-semibold flex items-center gap-2 flex-wrap">
@@ -216,7 +213,7 @@ export default function SeatingAppPage() {
 
               <div className="flex items-center gap-2 text-xs text-slate-500 font-medium">
                 <span className="hidden sm:inline bg-white px-3 py-1 rounded-full border border-slate-200 shadow-2xs font-semibold">
-                  💡 Meja Guru di Pojok Kiri Atas • Baris 1 untuk Siswa Prioritas
+                  Meja Guru di {config.teacherDeskPosition === 'top-right' ? 'Pojok Kanan Atas' : 'Pojok Kiri Atas'} • Baris 1 untuk Siswa Prioritas
                 </span>
               </div>
             </div>
